@@ -12,7 +12,7 @@
    
    pip install Flask Flask-Login Flask-SQLAlchemy
 
-3. 
+
   
 
 
