@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Administration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Task Administration</h1>
+        <p>Welcome, {{ current_user.username }}! <a href="{{ url_for('admin_logout') }}">Logout</a></p>
+        <form action="/admin/add" method="post">
+            <label for="title">New Task:</label>
+            <input type="text" id="title" name="title" required>
+            <button type="submit">Add Task</button>
+        </form>
+        <ul>
+            {% for task in tasks %}
+                <li>
+                    {{ task.title }}
+                    <a href="{{ url_for('delete_task_admin', task_id=task.id) }}">Delete</a>
+                </li>
+            {% endfor %}
+        </ul>
+        <form action="/admin/delete_all" method="get">
+            <button type="submit" class="delete-all-btn">Delete All Tasks</button>
+        </form>
+    </div>
+</body>
+</html>
