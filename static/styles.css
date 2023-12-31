@@ -1,9 +1,44 @@
-/* Estilos generales para el cuerpo */
+/* Estilos para el área de Registro e Inicio de Sesión */
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f2f2f2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
     margin: 0;
-    padding: 0;
+}
+
+.register-login-container {
+    background-color: #f9f9f9;  /* Cambié el color de fondo a un tono más claro */
+    padding: 30px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    text-align: center;
+    transition: box-shadow 0.3s ease;
+}
+
+.register-login-container:hover {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.form-link {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.form-link:hover {
+    color: #0056b3;
+}
+
+.form-animation {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.form-shown {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* Estilos para el contenedor principal de Registro e Inicio de Sesión */
@@ -115,19 +150,31 @@ body.register-login {
 }
 
 /* Estilos para la barra de navegación */
-body.register-login nav {
+nav {
     background-color: #333;
     color: #fff;
     padding: 10px;
-    text-align: right;
+    text-align: center;
     width: 930px; /* Ajusta el ancho según tus necesidades */
-    height: 75px; /* Ajusta el alto según tus necesidades */
+    height: 41px; /* Ajusta el alto según tus necesidades */
     margin-top: -463px; /* Ajusta el valor según sea necesario */
 }
 
-body.register-login .welcome-logout {
+.welcome-logout {
     display: flex;
     align-items: center;
+}
+
+/* Estilos para el enlace de cierre de sesión */
+.welcome-logout a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 10px; /* Espaciado entre el mensaje de bienvenida y el enlace de cierre de sesión */
+    transition: color 0.3s ease;
+}
+
+.welcome-logout a:hover {
+    color: #ddd; /* Cambia el color al pasar el mouse sobre el enlace */
 }
 
 /* Estilos para el contenedor principal del administrador de tareas */
@@ -146,7 +193,9 @@ body.task-admin .container {
     background-color: #fff;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    height: 188px; /* Ajusta la altura según tus necesidades */
+    height: 821px; /* Ajusta la altura según tus necesidades */
+
+    margin-left: 150px; /* Agregué margen izquierdo para desplazar a la derecha */
 }
 
 body.task-admin #calendar {
@@ -154,8 +203,10 @@ body.task-admin #calendar {
     padding: 20px;
     width: 930px; /* Ajusta el ancho según tus necesidades */
     height: 600px; /* Ajusta el alto según tus necesidades */
-    margin-top: 190px; /* Ajusta el valor según sea necesario */
+    margin-top: 91px; /* Ajusta el valor según sea necesario */
     margin-bottom: 20px; /* Ajusta el margen inferior según sea necesario */
+
+    margin-left: 20px; /* Agregué margen izquierdo para desplazar a la derecha */
 }
 
 body.task-admin #taskDetails {
@@ -172,4 +223,35 @@ body.task-admin #dayHeader {
 body.task-admin #taskList {
     list-style: none;
     padding: 0;
+}
+
+/* Estilos para etiquetas y campos de formulario */
+label {
+    display: block;
+    margin-bottom: 10px;
+    color: #555;
+    font-weight: bold;  /* Hice que las etiquetas sean más notables */
+}
+
+input {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 20px;  /* Aumenté el espacio entre los campos */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Estilos para el botón */
+button {
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;  /* Ajusté el padding para un botón más grande */
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049;
 }
