@@ -4,35 +4,83 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Calendar</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" integrity="sha256-K6hooqTgoOQGbZr2mBpL+fFwZlO6F5e01hx6sKx95YM=" crossorigin="anonymous" />
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oLcpSstnh6w9awmCpkqDgxsUKne+5i+Y8fKsre4LmEY=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha256-bCmbieeQklrCkI+qLvjMEWGXw+IzIU2tq+AnZysK4cM=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js" integrity="sha256-2D4WPNRr8hpCB1bDhE/5QOH3cmFwGXlD00x/2MOmozs=" crossorigin="anonymous"></script>
-    <style>
-        body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
+    <title>Task Administration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <!-- FullCalendar CSS y JS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Task Administration</h1>
+        <p>Welcome, {{ current_user.username }}! <a href="{{ url_for('admin_logout') }}">Logout</a></p>
+        <div id="calendar"></div>
+        <div id="taskDetails">
+            <h3 id="dayHeader"></h3>
+            <ul id="taskList"></ul>
+        </div>
+        <form id="addTaskForm">
+            <label for="title">New Task:</label>
+            <input type="text" id="title" name="title" required>
+            <button type="submit">Add Task</button>
+        </form>
+        <ul>
+            {% for task in tasks %}
+                <li>
+                    {{ task.title }}
+                    <a href="{{ url_for('delete_task_admin', task_id=task.id) }}">Delete</a>
+                </li>
+            {% endfor %}
+        </ul>
+        <form action="/admin/delete_all" method="get">
+            <button type="submit" class="delete-all-btn">Delete All Tasks</button>
+        </form>
+    </div>
 
-        #calendar {
-            width: 70%;
-        }
-    </style>
     <script>
-        // Configuración del calendario
         $(document).ready(function () {
             $('#calendar').fullCalendar({
-                // Configuraciones adicionales del calendario
+                events: '/admin/tasks',
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                dayClick: function (date) {
+                    $('#dayHeader').text(date.format('MMMM D, YYYY'));
+                    $.get('/admin/tasks', function (data) {
+                        var taskList = $('#taskList');
+                        taskList.empty();
+                        data.tasks.forEach(function (task) {
+                            var taskDate = moment(task.start).format('MMMM D, YYYY');
+                            if (taskDate === date.format('MMMM D, YYYY')) {
+                                taskList.append('<li>' + task.title + '</li>');
+                            }
+                        });
+                    });
+                    $('#taskDetails').show();
+                }
+            });
+
+            // Ocultar el cuadro de detalles inicialmente
+            $('#taskDetails').hide();
+
+            // Enviar formulario de nueva tarea por AJAX
+            $('#addTaskForm').submit(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '/admin/add',
+                    method: 'POST',
+                    data: $(this).serialize(),
+                    success: function (data) {
+                        // Recargar eventos del calendario después de agregar una tarea
+                        $('#calendar').fullCalendar('refetchEvents');
+                    }
+                });
             });
         });
     </script>
-</head>
-<body>
-    <!-- Contenedor para el calendario -->
-    <div id="calendar"></div>
 </body>
 </html>
