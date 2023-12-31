@@ -147,3 +147,72 @@ body {
 
 
 
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+nav {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    text-align: right;
+    width: 930px; /* Ajusta el ancho según tus necesidades */
+    height: 75px; /* Ajusta el alto según tus necesidades */
+    margin-top: -463px; /* Ajusta el valor según sea necesario */
+}
+
+.welcome-logout {
+    display: flex;
+    align-items: center;
+}
+
+.container {
+    display: flex;
+    max-width: 1200px;
+    margin: 20px auto;
+    background-color: #fff;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    height: 970px; /* Ajusta la altura según tus necesidades */
+}
+
+#calendar {
+    flex: 2;
+    padding: 20px;
+    width: 930px; /* Ajusta el ancho según tus necesidades */
+    height: 600px; /* Ajusta el alto según tus necesidades */
+    margin-top: 190px; /* Ajusta el valor según sea necesario */
+    margin-bottom: 20px; /* Ajusta el margen inferior según sea necesario */
+}
+
+#taskDetails {
+    flex: 1;
+    padding: 20px;
+    display: none;
+}
+
+#dayHeader {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+#taskList {
+    list-style: none;
+    padding: 0;
+}
+
+
+
+
+
+
+
+
+
+
+
