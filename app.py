@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
@@ -17,6 +17,31 @@ class User(UserMixin, db.Model):
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+class Task(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(50), nullable=False)
+    start_date = db.Column(db.String(20), nullable=False)  # Añadido campo para la fecha de inicio
+    end_date = db.Column(db.String(20), nullable=False)  # Añadido campo para la fecha de finalización
+
+# Ruta para obtener las tareas asociadas a una fecha específica
+@app.route('/admin/tasks_for_date', methods=['GET'])
+@login_required
+def tasks_for_date():
+    start_date = request.args.get('start')
+    end_date = request.args.get('end')
+    tasks = Task.query.filter(Task.start_date >= start_date, Task.end_date <= end_date).all()
+
+    # Formatea las tareas para que sean compatibles con FullCalendar
+    events = []
+    for task in tasks:
+        events.append({
+            'title': task.title,
+            'start': task.start_date,
+            'end': task.end_date
+        })
+
+    return jsonify(events)
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -5,39 +5,56 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Administration</title>
+
+    <!-- Agrega FullCalendar CDN y estilos personalizados -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" />
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 
-    <!-- Agrega FullCalendar CDN -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
-</head>
+    <!-- Scripts necesarios para FullCalendar -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
 
+    <!-- Script personalizado para manejar el calendario -->
+    <script>
+        $(document).ready(function() {
+            // Configuración inicial del calendario
+            $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                selectable: true,
+                selectHelper: true,
+                events: '/admin/tasks_for_date',  // Ruta para obtener eventos desde el servidor
+                select: function(start, end) {
+                    // Cuando se selecciona una fecha, muestra un prompt para agregar una tarea
+                    var title = prompt('Enter Task Title:');
+                    if (title) {
+                        var eventData = {
+                            title: title,
+                            start: start,
+                            end: end
+                        };
+                        $('#calendar').fullCalendar('renderEvent', eventData, true); // añade el evento al calendario
+                        // Aquí deberías hacer una llamada al servidor para guardar la tarea asociada a la fecha
+                    }
+                    $('#calendar').fullCalendar('unselect');
+                }
+            });
+        });
+    </script>
+</head>
 <body>
     <div class="container">
         <h1>Task Administration</h1>
         <p>Welcome, {{ current_user.username }}! <a href="{{ url_for('admin_logout') }}">Logout</a></p>
-        <form action="/admin/add" method="post">
-            <label for="title">New Task:</label>
-            <input type="text" id="title" name="title" required>
-            <button type="submit">Add Task</button>
-        </form>
-        <ul>
-            {% for task in tasks %}
-                <li>
-                    {{ task.title }}
-                    <a href="{{ url_for('delete_task_admin', task_id=task.id) }}">Delete</a>
-                </li>
-            {% endfor %}
-        </ul>
-        <form action="/admin/delete_all" method="get">
-            <button type="submit" class="delete-all-btn">Delete All Tasks</button>
-        </form>
+
+        <!-- Calendario -->
+        <div id="calendar"></div>
+
+        <!-- Resto del contenido... -->
     </div>
-
-    <!-- Calendario -->
-<div id="calendar"></div>
-
 </body>
 </html>
