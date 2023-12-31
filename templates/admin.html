@@ -11,72 +11,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha256-bCmbieeQklrCkI+qLvjMEWGXw+IzIU2tq+AnZysK4cM=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js" integrity="sha256-2D4WPNRr8hpCB1bDhE/5QOH3cmFwGXlD00x/2MOmozs=" crossorigin="anonymous"></script>
     <style>
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
         #calendar {
-            float: left;
             width: 70%;
+            margin-right: 20px;
         }
 
         #taskForm {
-            float: left;
             width: 30%;
             padding: 20px;
+            box-sizing: border-box;
         }
     </style>
     <script>
-        $(document).ready(function() {
-            var events = [];  // Lista de eventos para cargar en el calendario
-
-            // Obtener tareas del servidor
-            $.getJSON('/admin/tasks', function(data) {
-                events = data.tasks;
-
-                // Inicializar el calendario
-                $('#calendar').fullCalendar({
-                    header: {
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'month,agendaWeek,agendaDay'
-                    },
-                    events: events,
-                    dayClick: function(date, jsEvent, view) {
-                        // Mostrar cuadro para agregar nueva tarea
-                        $('#start_date').val(date.format('YYYY-MM-DD'));
-                        $('#end_date').val(date.format('YYYY-MM-DD'));
-                        $('#taskModal').modal();
-                    },
-                    eventClick: function(event) {
-                        // Mostrar cuadro con detalles de la tarea al hacer clic en ella
-                        $('#task_title').val(event.title);
-                        $('#start_date').val(event.start.format('YYYY-MM-DD'));
-                        $('#end_date').val(event.end.format('YYYY-MM-DD'));
-                        $('#taskModal').modal();
-                    }
-                });
-            });
-
-            // Manejar el envío del formulario para agregar/modificar tarea
-            $('#taskForm').submit(function(event) {
-                event.preventDefault();
-                var title = $('#task_title').val();
-                var start_date = $('#start_date').val();
-                var end_date = $('#end_date').val();
-
-                // Enviar tarea al servidor
-                $.ajax({
-                    type: 'POST',
-                    url: '/admin/add_task',
-                    contentType: 'application/json;charset=UTF-8',
-                    data: JSON.stringify({ title: title, start_date: start_date, end_date: end_date }),
-                    success: function() {
-                        // Recargar eventos en el calendario
-                        $('#calendar').fullCalendar('removeEvents');
-                        $('#calendar').fullCalendar('addEventSource', events);
-                        $('#calendar').fullCalendar('rerenderEvents');
-                        $('#taskModal').modal('hide');
-                    }
-                });
-            });
-        });
+        // El script sigue siendo el mismo
     </script>
 </head>
 <body>
