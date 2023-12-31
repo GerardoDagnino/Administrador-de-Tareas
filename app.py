@@ -21,29 +21,9 @@ def load_user(user_id):
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), nullable=False)
-    start_date = db.Column(db.String(20), nullable=False)  # Añadido campo para la fecha de inicio
-    end_date = db.Column(db.String(20), nullable=False)  # Añadido campo para la fecha de finalización
+    start_date = db.Column(db.Date, nullable=False)
+    end_date = db.Column(db.Date, nullable=False)
 
-# Ruta para obtener las tareas asociadas a una fecha específica
-@app.route('/admin/tasks_for_date', methods=['GET'])
-@login_required
-def tasks_for_date():
-    start_date = request.args.get('start')
-    end_date = request.args.get('end')
-    tasks = Task.query.filter(Task.start_date >= start_date, Task.end_date <= end_date).all()
-
-    # Formatea las tareas para que sean compatibles con FullCalendar
-    events = []
-    for task in tasks:
-        events.append({
-            'title': task.title,
-            'start': task.start_date,
-            'end': task.end_date
-        })
-
-    return jsonify(events)
-
-# Rutas originales para la gestión de tareas
 @app.route('/')
 @login_required
 def index():
@@ -54,9 +34,7 @@ def index():
 @login_required
 def add():
     title = request.form['title']
-    start_date = request.form['start_date']
-    end_date = request.form['end_date']
-    new_task = Task(title=title, start_date=start_date, end_date=end_date)
+    new_task = Task(title=title)
     db.session.add(new_task)
     db.session.commit()
     return redirect(url_for('index'))
@@ -101,8 +79,7 @@ def logout():
 @app.route('/admin')
 @login_required
 def admin():
-    tasks = Task.query.all()
-    return render_template('admin.html', tasks=tasks)
+    return render_template('admin.html')
 
 @app.route('/admin/add', methods=['POST'])
 @login_required
@@ -135,6 +112,13 @@ def admin_logout():
     logout_user()
     flash('Logout successful!', 'success')
     return redirect(url_for('login'))
+
+@app.route('/admin/tasks')
+@login_required
+def admin_tasks():
+    tasks = Task.query.all()
+    task_list = [{'title': task.title, 'start_date': task.start_date.strftime('%Y-%m-%d'), 'end_date': task.end_date.strftime('%Y-%m-%d')} for task in tasks]
+    return jsonify({'tasks': task_list})
 
 if __name__ == '__main__':
     with app.app_context():

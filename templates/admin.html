@@ -5,56 +5,68 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Administration</title>
-
-    <!-- Agrega FullCalendar CDN y estilos personalizados -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" />
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-
-    <!-- Scripts necesarios para FullCalendar -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <!-- FullCalendar CSS y JS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
-
-    <!-- Script personalizado para manejar el calendario -->
-    <script>
-        $(document).ready(function() {
-            // Configuración inicial del calendario
-            $('#calendar').fullCalendar({
-                header: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'month,agendaWeek,agendaDay'
-                },
-                selectable: true,
-                selectHelper: true,
-                events: '/admin/tasks_for_date',  // Ruta para obtener eventos desde el servidor
-                select: function(start, end) {
-                    // Cuando se selecciona una fecha, muestra un prompt para agregar una tarea
-                    var title = prompt('Enter Task Title:');
-                    if (title) {
-                        var eventData = {
-                            title: title,
-                            start: start,
-                            end: end
-                        };
-                        $('#calendar').fullCalendar('renderEvent', eventData, true); // añade el evento al calendario
-                        // Aquí deberías hacer una llamada al servidor para guardar la tarea asociada a la fecha
-                    }
-                    $('#calendar').fullCalendar('unselect');
-                }
-            });
-        });
-    </script>
 </head>
 <body>
     <div class="container">
         <h1>Task Administration</h1>
         <p>Welcome, {{ current_user.username }}! <a href="{{ url_for('admin_logout') }}">Logout</a></p>
-
-        <!-- Calendario -->
         <div id="calendar"></div>
-
-        <!-- Resto del contenido... -->
+        <div id="taskDetails">
+            <h3 id="dayHeader"></h3>
+            <ul id="taskList"></ul>
+        </div>
+        <form action="/admin/add" method="post">
+            <label for="title">New Task:</label>
+            <input type="text" id="title" name="title" required>
+            <button type="submit">Add Task</button>
+        </form>
+        <ul>
+            {% for task in tasks %}
+                <li>
+                    {{ task.title }}
+                    <a href="{{ url_for('delete_task_admin', task_id=task.id) }}">Delete</a>
+                </li>
+            {% endfor %}
+        </ul>
+        <form action="/admin/delete_all" method="get">
+            <button type="submit" class="delete-all-btn">Delete All Tasks</button>
+        </form>
     </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#calendar').fullCalendar({
+                events: '/admin/tasks',
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                dayClick: function (date) {
+                    $('#dayHeader').text(date.format('MMMM D, YYYY'));
+                    $.get('/admin/tasks', function (data) {
+                        var taskList = $('#taskList');
+                        taskList.empty();
+                        data.tasks.forEach(function (task) {
+                            var taskDate = moment(task.start_date).format('MMMM D, YYYY');
+                            if (taskDate === date.format('MMMM D, YYYY')) {
+                                taskList.append('<li>' + task.title + '</li>');
+                            }
+                        });
+                    });
+                    $('#taskDetails').show();
+                }
+            });
+
+            // Ocultar el cuadro de detalles inicialmente
+            $('#taskDetails').hide();
+        });
+    </script>
 </body>
 </html>
