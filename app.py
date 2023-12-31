@@ -43,10 +43,7 @@ def tasks_for_date():
 
     return jsonify(events)
 
-class Task(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(50), nullable=False)
-
+# Rutas originales para la gestión de tareas
 @app.route('/')
 @login_required
 def index():
@@ -57,7 +54,9 @@ def index():
 @login_required
 def add():
     title = request.form['title']
-    new_task = Task(title=title)
+    start_date = request.form['start_date']
+    end_date = request.form['end_date']
+    new_task = Task(title=title, start_date=start_date, end_date=end_date)
     db.session.add(new_task)
     db.session.commit()
     return redirect(url_for('index'))
