@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Administration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" />
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
@@ -16,6 +17,12 @@
             <input type="text" id="title" name="title" required>
             <button type="submit">Add Task</button>
         </form>
+        <div id="calendar"></div>
+        <div id="task-form">
+            <label for="task-title">Task:</label>
+            <input type="text" id="task-title" required>
+            <button id="add-task-btn">Add Task</button>
+        </div>
         <ul>
             {% for task in tasks %}
                 <li>
@@ -28,5 +35,10 @@
             <button type="submit" class="delete-all-btn">Delete All Tasks</button>
         </form>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+    <script src="{{ url_for('static', filename='calendar.js') }}"></script>
 </body>
 </html>
