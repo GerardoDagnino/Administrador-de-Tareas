@@ -13,18 +13,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
 </head>
-<body>
+<body class="task-admin">
     <!-- Barra de navegación -->
     <nav>
         <a href="#">Home</a>
         <div class="welcome-logout">
             <p>Welcome, {{ current_user.username }}!</p>
             <p></p><a href="{{ url_for('admin_logout') }}">Logout</a></p>
-           
         </div>
     </nav>
 
-    <!-- Contenido principal -->
+    <!-- Contenido principal del administrador de tareas -->
     <div class="container">
         <!-- Calendario -->
         <div id="calendar"></div>
@@ -34,10 +33,6 @@
             <h3 id="dayHeader"></h3>
             <ul id="taskList"></ul>
         </div>
-
-    
-
-        
     </div>
 
     <!-- Scripts y código JavaScript según sea necesario -->

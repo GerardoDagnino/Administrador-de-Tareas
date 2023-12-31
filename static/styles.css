@@ -1,3 +1,4 @@
+/* Estilos generales para el cuerpo */
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f2f2f2;
@@ -5,7 +6,8 @@ body {
     padding: 0;
 }
 
-.container {
+/* Estilos para el contenedor principal de Registro e Inicio de Sesión */
+.register-login-container {
     max-width: 600px;
     margin: 20px auto;
     background-color: #fff;
@@ -15,26 +17,28 @@ body {
     transition: box-shadow 0.3s ease;
 }
 
-.container:hover {
+.register-login-container:hover {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
 
-h1 {
+/* Estilos para encabezados en Registro e Inicio de Sesión */
+.register-login-container h1 {
     color: #333;
     text-align: center;
 }
 
-form {
+/* Estilos para formularios en Registro e Inicio de Sesión */
+.register-login-container form {
     margin-bottom: 20px;
 }
 
-label {
+.register-login-container label {
     display: block;
     margin-bottom: 5px;
     color: #555;
 }
 
-input {
+.register-login-container input {
     width: calc(100% - 22px);
     padding: 10px;
     margin-bottom: 10px;
@@ -42,7 +46,7 @@ input {
     border-radius: 4px;
 }
 
-button {
+.register-login-container button {
     background-color: #4caf50;
     color: #fff;
     border: none;
@@ -52,16 +56,16 @@ button {
     transition: background-color 0.3s ease;
 }
 
-button:hover {
+.register-login-container button:hover {
     background-color: #45a049;
 }
 
-ul {
+.register-login-container ul {
     list-style: none;
     padding: 0;
 }
 
-li {
+.register-login-container li {
     background-color: #f9f9f9;
     margin-bottom: 10px;
     padding: 15px;
@@ -73,21 +77,21 @@ li {
     transition: background-color 0.3s ease;
 }
 
-li:hover {
+.register-login-container li:hover {
     background-color: #f2f2f2;
 }
 
-a {
+.register-login-container a {
     color: #d9534f;
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
-a:hover {
+.register-login-container a:hover {
     color: #b52b27;
 }
 
-.delete-all-btn {
+.register-login-container .delete-all-btn {
     background-color: #d9534f;
     color: #fff;
     border: none;
@@ -97,13 +101,12 @@ a:hover {
     transition: background-color 0.3s ease;
 }
 
-.delete-all-btn:hover {
+.register-login-container .delete-all-btn:hover {
     background-color: #b52b27;
 }
 
-/* Registro e inicio de sesión */
-
-body {
+/* Estilos para la página de Registro e Inicio de Sesión */
+body.register-login {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -111,52 +114,8 @@ body {
     margin: 0;
 }
 
-.register-login-container {
-    background-color: #fff;
-    padding: 30px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    text-align: center;
-    transition: box-shadow 0.3s ease;
-}
-
-.register-login-container:hover {
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-}
-
-.form-link {
-    color: #007bff;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.form-link:hover {
-    color: #0056b3;
-}
-
-.form-animation {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-.form-shown {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-
-
-
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f2f2f2;
-    margin: 0;
-    padding: 0;
-    display: flex;
-}
-
-nav {
+/* Estilos para la barra de navegación */
+body.register-login nav {
     background-color: #333;
     color: #fff;
     padding: 10px;
@@ -166,22 +125,31 @@ nav {
     margin-top: -463px; /* Ajusta el valor según sea necesario */
 }
 
-.welcome-logout {
+body.register-login .welcome-logout {
     display: flex;
     align-items: center;
 }
 
-.container {
+/* Estilos para el contenedor principal del administrador de tareas */
+body.task-admin {
+    font-family: 'Arial', sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
     display: flex;
-    max-width: 1200px;
+}
+
+body.task-admin .container {
+    display: flex;
+    max-width: 898px;
     margin: 20px auto;
     background-color: #fff;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    height: 970px; /* Ajusta la altura según tus necesidades */
+    height: 188px; /* Ajusta la altura según tus necesidades */
 }
 
-#calendar {
+body.task-admin #calendar {
     flex: 2;
     padding: 20px;
     width: 930px; /* Ajusta el ancho según tus necesidades */
@@ -190,29 +158,18 @@ nav {
     margin-bottom: 20px; /* Ajusta el margen inferior según sea necesario */
 }
 
-#taskDetails {
+body.task-admin #taskDetails {
     flex: 1;
     padding: 20px;
     display: none;
 }
 
-#dayHeader {
+body.task-admin #dayHeader {
     color: #333;
     margin-bottom: 10px;
 }
 
-#taskList {
+body.task-admin #taskList {
     list-style: none;
     padding: 0;
 }
-
-
-
-
-
-
-
-
-
-
-
