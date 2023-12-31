@@ -4,71 +4,35 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Administration</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Task Calendar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" integrity="sha256-K6hooqTgoOQGbZr2mBpL+fFwZlO6F5e01hx6sKx95YM=" crossorigin="anonymous" />
     <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oLcpSstnh6w9awmCpkqDgxsUKne+5i+Y8fKsre4LmEY=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha256-bCmbieeQklrCkI+qLvjMEWGXw+IzIU2tq+AnZysK4cM=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js" integrity="sha256-2D4WPNRr8hpCB1bDhE/5QOH3cmFwGXlD00x/2MOmozs=" crossorigin="anonymous"></script>
     <style>
-        .container {
+        body {
             display: flex;
+            align-items: center;
             justify-content: center;
-            align-items: flex-start;
+            height: 100vh;
+            margin: 0;
         }
 
         #calendar {
             width: 70%;
-            margin-right: 20px;
-        }
-
-        #taskForm {
-            width: 30%;
-            padding: 20px;
-            box-sizing: border-box;
         }
     </style>
     <script>
-        // El script sigue siendo el mismo
+        // Configuración del calendario
+        $(document).ready(function () {
+            $('#calendar').fullCalendar({
+                // Configuraciones adicionales del calendario
+            });
+        });
     </script>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <p>Welcome, {{ current_user.username }}! <a href="{{ url_for('admin_logout') }}">Logout</a></p>
-        </div>
-
-        <!-- Contenedor para el calendario -->
-        <div id="calendar"></div>
-
-        <!-- Formulario para agregar/modificar tarea -->
-        <form id="taskForm">
-            <h2>New Task</h2>
-            <label for="task_title">Task:</label>
-            <input type="text" id="task_title" name="task_title" required>
-            <label for="start_date">Start Date:</label>
-            <input type="date" id="start_date" name="start_date" required>
-            <label for="end_date">End Date:</label>
-            <input type="date" id="end_date" name="end_date" required>
-            <button type="submit">Save</button>
-        </form>
-    </div>
-
-    <!-- Modal para agregar/modificar tarea -->
-    <div id="taskModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <!-- Contenido del modal -->
-            <h2>New Task</h2>
-            <label for="task_title">Task:</label>
-            <input type="text" id="task_title" name="task_title" required>
-            <label for="start_date">Start Date:</label>
-            <input type="date" id="start_date" name="start_date" required>
-            <label for="end_date">End Date:</label>
-            <input type="date" id="end_date" name="end_date" required>
-            <button type="submit">Save</button>
-        </div>
-    </div>
-
+    <!-- Contenedor para el calendario -->
+    <div id="calendar"></div>
 </body>
 </html>
