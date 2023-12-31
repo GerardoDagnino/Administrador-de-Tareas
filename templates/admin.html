@@ -6,67 +6,101 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Administration</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <!-- FullCalendar CSS y JS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" integrity="sha256-K6hooqTgoOQGbZr2mBpL+fFwZlO6F5e01hx6sKx95YM=" crossorigin="anonymous" />
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oLcpSstnh6w9awmCpkqDgxsUKne+5i+Y8fKsre4LmEY=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha256-bCmbieeQklrCkI+qLvjMEWGXw+IzIU2tq+AnZysK4cM=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js" integrity="sha256-2D4WPNRr8hpCB1bDhE/5QOH3cmFwGXlD00x/2MOmozs=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function() {
+            var events = [];  // Lista de eventos para cargar en el calendario
+
+            // Obtener tareas del servidor
+            $.getJSON('/admin/tasks', function(data) {
+                events = data.tasks;
+
+                // Inicializar el calendario
+                $('#calendar').fullCalendar({
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'month,agendaWeek,agendaDay'
+                    },
+                    events: events,
+                    dayClick: function(date, jsEvent, view) {
+                        // Mostrar cuadro para agregar nueva tarea
+                        $('#modalTitle').html('New Task');
+                        $('#start_date').val(date.format('YYYY-MM-DD'));
+                        $('#end_date').val(date.format('YYYY-MM-DD'));
+                        $('#taskModal').modal();
+                    },
+                    eventClick: function(event) {
+                        // Mostrar cuadro con detalles de la tarea al hacer clic en ella
+                        $('#modalTitle').html('Task Details');
+                        $('#task_title').val(event.title);
+                        $('#start_date').val(event.start.format('YYYY-MM-DD'));
+                        $('#end_date').val(event.end.format('YYYY-MM-DD'));
+                        $('#taskModal').modal();
+                    }
+                });
+            });
+
+            // Manejar el envío del formulario para agregar/modificar tarea
+            $('#taskForm').submit(function(event) {
+                event.preventDefault();
+                var title = $('#task_title').val();
+                var start_date = $('#start_date').val();
+                var end_date = $('#end_date').val();
+
+                // Enviar tarea al servidor
+                $.ajax({
+                    type: 'POST',
+                    url: '/admin/add_task',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: JSON.stringify({ title: title, start_date: start_date, end_date: end_date }),
+                    success: function() {
+                        // Recargar eventos en el calendario
+                        $('#calendar').fullCalendar('removeEvents');
+                        $('#calendar').fullCalendar('addEventSource', events);
+                        $('#calendar').fullCalendar('rerenderEvents');
+                        $('#taskModal').modal('hide');
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="container">
         <h1>Task Administration</h1>
         <p>Welcome, {{ current_user.username }}! <a href="{{ url_for('admin_logout') }}">Logout</a></p>
+        
+        <!-- Contenedor para el calendario -->
         <div id="calendar"></div>
-        <div id="taskDetails">
-            <h3 id="dayHeader"></h3>
-            <ul id="taskList"></ul>
+
+        <!-- Modal para agregar/modificar tarea -->
+        <div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalTitle"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="taskForm">
+                            <label for="task_title">Task:</label>
+                            <input type="text" id="task_title" name="task_title" required>
+                            <label for="start_date">Start Date:</label>
+                            <input type="date" id="start_date" name="start_date" required>
+                            <label for="end_date">End Date:</label>
+                            <input type="date" id="end_date" name="end_date" required>
+                            <button type="submit">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-        <form action="/admin/add" method="post">
-            <label for="title">New Task:</label>
-            <input type="text" id="title" name="title" required>
-            <button type="submit">Add Task</button>
-        </form>
-        <ul>
-            {% for task in tasks %}
-                <li>
-                    {{ task.title }}
-                    <a href="{{ url_for('delete_task_admin', task_id=task.id) }}">Delete</a>
-                </li>
-            {% endfor %}
-        </ul>
-        <form action="/admin/delete_all" method="get">
-            <button type="submit" class="delete-all-btn">Delete All Tasks</button>
-        </form>
     </div>
-
-    <script>
-        $(document).ready(function () {
-            $('#calendar').fullCalendar({
-                events: '/admin/tasks',
-                header: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'month,agendaWeek,agendaDay'
-                },
-                dayClick: function (date) {
-                    $('#dayHeader').text(date.format('MMMM D, YYYY'));
-                    $.get('/admin/tasks', function (data) {
-                        var taskList = $('#taskList');
-                        taskList.empty();
-                        data.tasks.forEach(function (task) {
-                            var taskDate = moment(task.start_date).format('MMMM D, YYYY');
-                            if (taskDate === date.format('MMMM D, YYYY')) {
-                                taskList.append('<li>' + task.title + '</li>');
-                            }
-                        });
-                    });
-                    $('#taskDetails').show();
-                }
-            });
-
-            // Ocultar el cuadro de detalles inicialmente
-            $('#taskDetails').hide();
-        });
-    </script>
 </body>
 </html>
