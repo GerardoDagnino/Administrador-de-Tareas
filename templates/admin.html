@@ -6,22 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Administration</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <!-- FullCalendar CSS y JS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
 </head>
 <body>
     <div class="container">
         <h1>Task Administration</h1>
         <p>Welcome, {{ current_user.username }}! <a href="{{ url_for('admin_logout') }}">Logout</a></p>
-        <div id="calendar"></div>
-        <div id="taskDetails">
-            <h3 id="dayHeader"></h3>
-            <ul id="taskList"></ul>
-        </div>
-        <form id="addTaskForm">
+        <form action="/admin/add" method="post">
             <label for="title">New Task:</label>
             <input type="text" id="title" name="title" required>
             <button type="submit">Add Task</button>
@@ -38,49 +28,5 @@
             <button type="submit" class="delete-all-btn">Delete All Tasks</button>
         </form>
     </div>
-
-    <script>
-        $(document).ready(function () {
-            $('#calendar').fullCalendar({
-                events: '/admin/tasks',
-                header: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'month,agendaWeek,agendaDay'
-                },
-                dayClick: function (date) {
-                    $('#dayHeader').text(date.format('MMMM D, YYYY'));
-                    $.get('/admin/tasks', function (data) {
-                        var taskList = $('#taskList');
-                        taskList.empty();
-                        data.tasks.forEach(function (task) {
-                            var taskDate = moment(task.start).format('MMMM D, YYYY');
-                            if (taskDate === date.format('MMMM D, YYYY')) {
-                                taskList.append('<li>' + task.title + '</li>');
-                            }
-                        });
-                    });
-                    $('#taskDetails').show();
-                }
-            });
-
-            // Ocultar el cuadro de detalles inicialmente
-            $('#taskDetails').hide();
-
-            // Enviar formulario de nueva tarea por AJAX
-            $('#addTaskForm').submit(function (e) {
-                e.preventDefault();
-                $.ajax({
-                    url: '/admin/add',
-                    method: 'POST',
-                    data: $(this).serialize(),
-                    success: function (data) {
-                        // Recargar eventos del calendario después de agregar una tarea
-                        $('#calendar').fullCalendar('refetchEvents');
-                    }
-                });
-            });
-        });
-    </script>
 </body>
 </html>
