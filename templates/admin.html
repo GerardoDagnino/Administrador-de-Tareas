@@ -14,18 +14,25 @@
 </head>
 <body>
     <div class="container">
-        <h1>Task Administration</h1>
-        <p>Welcome, {{ current_user.username }}! <a href="{{ url_for('admin_logout') }}">Logout</a></p>
-        <div id="calendar"></div>
-        <div id="taskDetails">
-            <h3 id="dayHeader"></h3>
-            <ul id="taskList"></ul>
+        <div class="header">
+            <h1>Task Administration</h1>
+            <p>Welcome, {{ current_user.username }}! <a href="{{ url_for('admin_logout') }}">Logout</a></p>
         </div>
+
+        <div class="calendar-container">
+            <div id="calendar"></div>
+            <div id="taskDetails">
+                <h3 id="dayHeader"></h3>
+                <ul id="taskList"></ul>
+            </div>
+        </div>
+
         <form action="/admin/add" method="post">
             <label for="title">New Task:</label>
             <input type="text" id="title" name="title" required>
             <button type="submit">Add Task</button>
         </form>
+
         <ul>
             {% for task in tasks %}
                 <li>
@@ -34,14 +41,15 @@
                 </li>
             {% endfor %}
         </ul>
+
         <form action="/admin/delete_all" method="get">
             <button type="submit" class="delete-all-btn">Delete All Tasks</button>
         </form>
     </div>
 
     <script>
-        $(document).ready(function () {
-            $('#calendar').fullCalendar({
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendar = $('#calendar').fullCalendar({
                 events: '/admin/tasks',
                 header: {
                     left: 'prev,next today',
