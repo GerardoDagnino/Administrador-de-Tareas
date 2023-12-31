@@ -28,14 +28,12 @@
                     events: events,
                     dayClick: function(date, jsEvent, view) {
                         // Mostrar cuadro para agregar nueva tarea
-                        $('#modalTitle').html('New Task');
                         $('#start_date').val(date.format('YYYY-MM-DD'));
                         $('#end_date').val(date.format('YYYY-MM-DD'));
                         $('#taskModal').modal();
                     },
                     eventClick: function(event) {
                         // Mostrar cuadro con detalles de la tarea al hacer clic en ella
-                        $('#modalTitle').html('Task Details');
                         $('#task_title').val(event.title);
                         $('#start_date').val(event.start.format('YYYY-MM-DD'));
                         $('#end_date').val(event.end.format('YYYY-MM-DD'));
@@ -71,9 +69,10 @@
 </head>
 <body>
     <div class="container">
-        <h1>Task Administration</h1>
-        <p>Welcome, {{ current_user.username }}! <a href="{{ url_for('admin_logout') }}">Logout</a></p>
-        
+        <div class="header">
+            <p>Welcome, {{ current_user.username }}! <a href="{{ url_for('admin_logout') }}">Logout</a></p>
+        </div>
+
         <!-- Contenedor para el calendario -->
         <div id="calendar"></div>
 
@@ -82,7 +81,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalTitle"></h5>
+                        <h5 class="modal-title" id="modalTitle">New Task</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
