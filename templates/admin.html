@@ -10,6 +10,18 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oLcpSstnh6w9awmCpkqDgxsUKne+5i+Y8fKsre4LmEY=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha256-bCmbieeQklrCkI+qLvjMEWGXw+IzIU2tq+AnZysK4cM=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js" integrity="sha256-2D4WPNRr8hpCB1bDhE/5QOH3cmFwGXlD00x/2MOmozs=" crossorigin="anonymous"></script>
+    <style>
+        #calendar {
+            float: left;
+            width: 70%;
+        }
+
+        #taskForm {
+            float: left;
+            width: 30%;
+            padding: 20px;
+        }
+    </style>
     <script>
         $(document).ready(function() {
             var events = [];  // Lista de eventos para cargar en el calendario
@@ -76,30 +88,34 @@
         <!-- Contenedor para el calendario -->
         <div id="calendar"></div>
 
-        <!-- Modal para agregar/modificar tarea -->
-        <div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalTitle">New Task</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="taskForm">
-                            <label for="task_title">Task:</label>
-                            <input type="text" id="task_title" name="task_title" required>
-                            <label for="start_date">Start Date:</label>
-                            <input type="date" id="start_date" name="start_date" required>
-                            <label for="end_date">End Date:</label>
-                            <input type="date" id="end_date" name="end_date" required>
-                            <button type="submit">Save</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+        <!-- Formulario para agregar/modificar tarea -->
+        <form id="taskForm">
+            <h2>New Task</h2>
+            <label for="task_title">Task:</label>
+            <input type="text" id="task_title" name="task_title" required>
+            <label for="start_date">Start Date:</label>
+            <input type="date" id="start_date" name="start_date" required>
+            <label for="end_date">End Date:</label>
+            <input type="date" id="end_date" name="end_date" required>
+            <button type="submit">Save</button>
+        </form>
+    </div>
+
+    <!-- Modal para agregar/modificar tarea -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <!-- Contenido del modal -->
+            <h2>New Task</h2>
+            <label for="task_title">Task:</label>
+            <input type="text" id="task_title" name="task_title" required>
+            <label for="start_date">Start Date:</label>
+            <input type="date" id="start_date" name="start_date" required>
+            <label for="end_date">End Date:</label>
+            <input type="date" id="end_date" name="end_date" required>
+            <button type="submit">Save</button>
         </div>
     </div>
+
 </body>
 </html>
