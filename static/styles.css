@@ -155,7 +155,7 @@ nav {
     color: #fff;
     padding: 10px;
     text-align: center;
-    width: 930px; /* Ajusta el ancho según tus necesidades */
+    
     height: 41px; /* Ajusta el alto según tus necesidades */
     margin-top: -463px; /* Ajusta el valor según sea necesario */
 }
@@ -165,7 +165,23 @@ nav {
     align-items: center;
 }
 
-/* Estilos para el enlace de cierre de sesión */
+/* Estilos para el nuevo cuadro de fecha seleccionada */
+#selectedDateContainer {
+    position: fixed;
+    bottom: 224px;
+    left: 0px;
+    background-color: #ff0000;
+   
+    border-radius: 8px;
+    padding: 10px;
+    height: 213px; /* Ajusta el alto según tus necesidades */
+    color: #000000; /* Color del texto (blanco en este caso) */
+}
+
+
+
+
+/* Estilos para el enlace de cierre de sesión LOGOUT */
 .welcome-logout a {
     color: #fff;
     text-decoration: none;
@@ -176,6 +192,9 @@ nav {
 .welcome-logout a:hover {
     color: #ddd; /* Cambia el color al pasar el mouse sobre el enlace */
 }
+
+
+
 
 /* Estilos para el contenedor principal del administrador de tareas */
 body.task-admin {
@@ -194,7 +213,7 @@ body.task-admin .container {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     height: 821px; /* Ajusta la altura según tus necesidades */
-
+    width: 930px; /* Ajusta el ancho según tus necesidades */
     margin-left: 150px; /* Agregué margen izquierdo para desplazar a la derecha */
 }
 
@@ -209,23 +228,9 @@ body.task-admin #calendar {
     margin-left: 20px; /* Agregué margen izquierdo para desplazar a la derecha */
 }
 
-body.task-admin #taskDetails {
-    flex: 1;
-    padding: 20px;
-    display: none;
-}
 
-body.task-admin #dayHeader {
-    color: #333;
-    margin-bottom: 10px;
-}
 
-body.task-admin #taskList {
-    list-style: none;
-    padding: 0;
-}
-
-/* Estilos para etiquetas y campos de formulario */
+/* Estilos para etiquetas y campos de formulario LOGIN Y REGISTER*/
 label {
     display: block;
     margin-bottom: 10px;
@@ -241,7 +246,7 @@ input {
     border-radius: 4px;
 }
 
-/* Estilos para el botón */
+/* Estilos para el botón LOGIN Y REGISTER */
 button {
     background-color: #4caf50;
     color: #fff;

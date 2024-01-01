@@ -16,14 +16,22 @@
 <body class="task-admin">
     <!-- Barra de navegación -->
     <nav>
-        
         <div class="welcome-logout">
             <p>Welcome, {{ current_user.username }}!</p>
-            <p></p><a href="{{ url_for('admin_logout') }}">Logout</a></p>
+            <p id="selectedDate"></p>
+            <a href="{{ url_for('admin_logout') }}">Logout</a>
         </div>
     </nav>
 
-    <!-- Contenido principal del administrador de tareas -->
+
+<!-- Nuevo cuadro para la fecha seleccionada -->
+<div id="selectedDateContainer">
+    <div id="selectedDateInfo"></div>
+</div>
+
+
+
+    <!-- Contenido principal -->
     <div class="container">
         <!-- Calendario -->
         <div id="calendar"></div>
@@ -35,29 +43,20 @@
         </div>
     </div>
 
-    <!-- Scripts y código JavaScript según sea necesario -->
-    <script>
-        $(document).ready(function () {
-            $('#calendar').fullCalendar({
-                events: '/admin/tasks',
-                header: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'month,agendaWeek,agendaDay'
-                },
-                dayClick: function (date) {
-                    $('#dayHeader').text(date.format('MMMM D, YYYY'));
-                    $.get('/admin/tasks', function (data) {
-                        var taskList = $('#taskList');
-                        taskList.empty();
-                        data.tasks.forEach(function (task) {
-                            var taskDate = moment(task.start_date).format('MMMM D, YYYY');
-                            if (taskDate === date.format('MMMM D, YYYY')) {
-                                taskList.append('<li>' + task.title + '</li>');
-                            }
-                        });
-                    });
-                    $('#taskDetails').show();
+   <!-- Scripts y código JavaScript según sea necesario -->
+   <script>
+    $(document).ready(function () {
+        $('#calendar').fullCalendar({
+            events: '/admin/tasks',
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaWeek,agendaDay'
+            },
+            dayClick: function (date) {
+                $('#selectedDateContainer').text('Año seleccionado: ' + date.format('MMMM D, YYYY'));
+                    
+                    
                 }
             });
 
