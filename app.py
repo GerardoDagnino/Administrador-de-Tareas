@@ -21,6 +21,7 @@ def load_user(user_id):
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), nullable=False)
+    start_date = db.Column(db.String(20), nullable=False)
 
 @app.route('/')
 @login_required
@@ -105,6 +106,33 @@ def delete_all_tasks_admin():
     db.session.commit()
     return redirect(url_for('admin'))
 
+@app.route('/save_task', methods=['POST'])
+def save_task():
+    data = request.get_json()
+    title = data['title']
+    start_date = data['start_date']
+
+    new_task = Task(title=title, start_date=start_date)
+    db.session.add(new_task)
+    db.session.commit()
+
+    
+
+@app.route('/admin/tasks')
+def get_tasks():
+    tasks = Task.query.all()
+    task_list = []
+
+    for task in tasks:
+        task_list.append({
+            'title': task.title,
+            'start': task.start_date,
+            'allDay': True
+        })
+
+   
+
+
 @app.route('/admin/logout')
 @login_required
 def admin_logout():
@@ -116,3 +144,4 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     app.run(debug=True)
+    

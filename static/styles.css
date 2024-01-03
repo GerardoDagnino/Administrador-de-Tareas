@@ -156,8 +156,8 @@ nav {
     color: #000000;
     padding: 10px;
     text-align: center;
-    
-    height: 41px; /* Ajusta el alto según tus necesidades */
+    border-radius: 8px;
+    height: 48px; /* Ajusta el alto según tus necesidades */
     margin-top: -463px; /* Ajusta el valor según sea necesario */
 }
 
@@ -277,7 +277,7 @@ nav {
 
 /* Estilos para el enlace de cierre de sesión LOGOUT */
 .welcome-logout a {
-    color: #000000;
+    color: #c5c5c5;
     text-decoration: none;
     margin-left: 10px; /* Espaciado entre el mensaje de bienvenida y el enlace de cierre de sesión */
     transition: color 0.3s ease;
