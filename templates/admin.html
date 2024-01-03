@@ -108,19 +108,18 @@
                     });
                 },
                 eventRender: function (event, element) {
-                    // Agrega un botón (X) junto a cada tarea para eliminarla solo en el calendario
-                    element.find('.fc-title').append('<button class="delete-task-btn">X</button>');
+    // Reemplaza la "X" por la imagen de la basura
+    element.find('.fc-title').html('<img src="tachodebasura.png" class="delete-task-img" />');
 
-                    // Maneja la eliminación de tareas solo en el calendario
-                    element.find('.delete-task-btn').click(function () {
-                        $('#calendar').fullCalendar('removeEvents', event._id);
-                        updateTaskListSelectedDate();
-                    });
+    // Maneja la eliminación de tareas solo en el calendario
+    element.find('.delete-task-img').click(function () {
+        $('#calendar').fullCalendar('removeEvents', event._id);
+        updateTaskListSelectedDate();
+    });
 
-                      // Ajusta el tamaño de la celda para adaptarse al contenido de la tarea
-                      element.css('height', 'auto');
-
-                }
+    // Ajusta el tamaño de la celda para adaptarse al contenido de la tarea
+    element.css('height', 'auto');
+}
 
 
 

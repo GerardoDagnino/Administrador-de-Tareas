@@ -358,3 +358,10 @@ button:hover {
     background-color: #000571;
 }
 
+
+
+.delete-task-img {
+    width: 20px; /* Ajusta el ancho según tus necesidades */
+    height: 20px; /* Ajusta la altura según tus necesidades */
+    cursor: pointer;
+}
