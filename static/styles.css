@@ -5,6 +5,7 @@ body {
     justify-content: center;
     height: 100vh;
     margin: 0;
+   
 }
 
 .register-login-container {
@@ -165,18 +166,111 @@ nav {
     align-items: center;
 }
 
+
+
+
+
+
+
 /* Estilos para el nuevo cuadro de fecha seleccionada */
 #selectedDateContainer {
     position: fixed;
-    bottom: 224px;
+    bottom: 126px;
     left: 0px;
     background-color: #ff0000;
    
     border-radius: 8px;
     padding: 10px;
-    height: 213px; /* Ajusta el alto según tus necesidades */
+    height: 298px; /* Ajusta el alto según tus necesidades */
+
+    
     color: #000000; /* Color del texto (blanco en este caso) */
 }
+
+
+#addTaskBtn {
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+#taskListSelectedDate {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+#taskListSelectedDate li {
+    background-color: #f9f9f9;
+    margin-bottom: 5px;
+    padding: 8px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+#taskListSelectedDate li:hover {
+    background-color: #f2f2f2;
+}
+
+
+
+/* Estilo para boton X(eliminar tarea) */
+
+#saveTaskBtn,
+#modifyTaskBtn,
+.delete-task-btn {
+    background-color: #4CAF50; /* Color de fondo verde */
+    color: white; /* Color del texto blanco */
+    border: none; /* Sin borde */
+    padding: 10px 20px; /* Relleno */
+    text-align: center; /* Alineación de texto al centro */
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+#saveTaskBtn:hover,
+#modifyTaskBtn:hover,
+.delete-task-btn:hover {
+    background-color: #000571; /* Cambia el color de fondo al pasar el mouse */
+}
+
+#modifyTaskBtn,
+#saveTaskBtn {
+    /* Estilos adicionales para el botón modifyTaskBtn y saveTaskBtn */
+    margin-right: 10px; /* Margen a la derecha */
+}
+
+.delete-task-btn {
+    /* Estilos adicionales para el botón delete-task-btn */
+    font-size: 12px; /* Tamaño de fuente más pequeño */
+    padding: 5px 10px; /* Relleno más pequeño */
+}
+
+
+.delete-task-btn {
+    font-size: 12px; /* Tamaño de fuente más pequeño */
+    padding: 2px 6px; /* Espaciado interno más pequeño */
+    background-color: #435aa7; /* Color de fondo */
+    color: #fff; /* Color del texto */
+    border: none; /* Sin borde */
+    cursor: pointer;
+    float: right; /* Alinear a la derecha */
+
+    height: -54em;
+}
+
+
 
 
 
@@ -203,6 +297,8 @@ body.task-admin {
     margin: 0;
     padding: 0;
     display: flex;
+
+    
 }
 
 body.task-admin .container {
@@ -214,7 +310,7 @@ body.task-admin .container {
     border-radius: 8px;
     height: 821px; /* Ajusta la altura según tus necesidades */
     width: 930px; /* Ajusta el ancho según tus necesidades */
-    margin-left: 150px; /* Agregué margen izquierdo para desplazar a la derecha */
+    margin-left: 188px; /* Agregué margen izquierdo para desplazar a la derecha */
 }
 
 body.task-admin #calendar {
@@ -253,6 +349,7 @@ button {
     border: none;
     padding: 12px 20px;  /* Ajusté el padding para un botón más grande */
     border-radius: 4px;
+    margin-bottom: 20px;  /* Aumenté el espacio entre los campos */
     cursor: pointer;
     transition: background-color 0.3s ease;
 }

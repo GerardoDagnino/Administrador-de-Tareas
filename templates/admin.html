@@ -7,6 +7,7 @@
     <title>Task Administration</title>
     <!-- Enlace al archivo CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    
     <!-- FullCalendar CSS y JS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -23,13 +24,20 @@
         </div>
     </nav>
 
-
-<!-- Nuevo cuadro para la fecha seleccionada -->
-<div id="selectedDateContainer">
-    <div id="selectedDateInfo"></div>
-</div>
-
-
+    <!-- Nuevo cuadro para la fecha seleccionada -->
+    <div id="selectedDateContainer">
+        <div id="selectedDateInfo"></div>
+        <button id="addTaskBtn" style="display: none;">Add Task</button>
+        <div id="taskInputContainer" style="display: none;">
+            <input type="text" id="taskInput" placeholder="Enter task title" maxlength="11">
+            <button id="saveTaskBtn">Save Task</button>
+        </div>
+        <div id="modifyTaskContainer" style="display: none;">
+            <input type="text" id="modifyTaskInput" placeholder="Modify task title" maxlength="11">
+            <button id="modifyTaskBtn">Modify Task</button>
+        </div>
+        <ul id="taskListSelectedDate"></ul>
+    </div>
 
     <!-- Contenido principal -->
     <div class="container">
@@ -43,25 +51,105 @@
         </div>
     </div>
 
-   <!-- Scripts y código JavaScript según sea necesario -->
-   <script>
-    $(document).ready(function () {
-        $('#calendar').fullCalendar({
-            events: '/admin/tasks',
-            header: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'month,agendaWeek,agendaDay'
-            },
-            dayClick: function (date) {
-                $('#selectedDateContainer').text('Año seleccionado: ' + date.format('MMMM D, YYYY'));
-                    
-                    
+    <!-- Scripts y código JavaScript según sea necesario -->
+    <script>
+        $(document).ready(function () {
+            $('#calendar').fullCalendar({
+                events: '/admin/tasks',
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                dayClick: function (date) {
+                    var formattedDate = date.format('MMMM D, YYYY');
+                    $('#selectedDateInfo').text('Year selected: ' + formattedDate);
+
+                    // Muestra el cuadro de detalles
+                    $('#taskDetails').show();
+
+                    // Muestra el botón para agregar tarea y el campo de entrada
+                    $('#addTaskBtn').show();
+                    $('#taskInputContainer').show();
+
+                    // Al hacer clic en el botón de agregar tarea
+                    $('#addTaskBtn').off('click').on('click', function () {
+                        $('#taskInputContainer').toggle();
+                        // Oculta el cuadro de modificación si está visible
+                        $('#modifyTaskContainer').hide();
+                    });
+
+                    // Al hacer clic en el botón de guardar tarea
+                    $('#saveTaskBtn').off('click').on('click', function () {
+                        var taskTitle = $('#taskInput').val();
+                        if (taskTitle) {
+                            // Agrega la tarea al calendario
+                            $('#calendar').fullCalendar('renderEvent', {
+                                title: taskTitle,
+                                start: date,
+                                allDay: true,
+                                editable: true,
+                                eventDurationEditable: false
+                            });
+
+                            // Limpia el campo de entrada
+                            $('#taskInput').val('');
+
+                            // Muestra el cuadro para modificar la última tarea escrita
+                            $('#modifyTaskContainer').show();
+                            $('#modifyTaskInput').val(taskTitle);
+
+                            // Actualiza la lista de tareas en el día seleccionado
+                            updateTaskListSelectedDate();
+                        }
+                    });
+                },
+                eventRender: function (event, element) {
+                    // Agrega un botón (X) junto a cada tarea para eliminarla solo en el calendario
+                    element.find('.fc-title').append('<button class="delete-task-btn">X</button>');
+
+                    // Maneja la eliminación de tareas solo en el calendario
+                    element.find('.delete-task-btn').click(function () {
+                        $('#calendar').fullCalendar('removeEvents', event._id);
+                        updateTaskListSelectedDate();
+                    });
+
+                      // Ajusta el tamaño de la celda para adaptarse al contenido de la tarea
+                      element.css('height', 'auto');
+
+                }
+
+
+
+            });
+
+            // Al hacer clic en el botón de modificar tarea
+            $('#modifyTaskBtn').off('click').on('click', function () {
+                var modifiedTaskTitle = $('#modifyTaskInput').val();
+                if (modifiedTaskTitle) {
+                    // Modifica la última tarea en el calendario
+                    var events = $('#calendar').fullCalendar('clientEvents');
+                    if (events.length > 0) {
+                        events[events.length - 1].title = modifiedTaskTitle;
+                        $('#calendar').fullCalendar('updateEvent', events[events.length - 1]);
+                    }
+
+                    // Limpia el campo de modificación
+                    $('#modifyTaskInput').val('');
+
+                    // Actualiza la lista de tareas en el día seleccionado
+                    updateTaskListSelectedDate();
                 }
             });
 
-            // Ocultar el cuadro de detalles inicialmente
-            $('#taskDetails').hide();
+            // Función para actualizar la lista de tareas en el día seleccionado
+            function updateTaskListSelectedDate() {
+                var selectedDate = $('#selectedDateInfo').text().replace('Año seleccionado: ', '');
+                var taskListSelectedDate = $('#taskListSelectedDate');
+                taskListSelectedDate.empty();
+
+                
+            }
         });
     </script>
 </body>
