@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
@@ -22,19 +22,18 @@ class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), nullable=False)
     start_date = db.Column(db.String(20), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 @app.route('/')
 @login_required
 def index():
-    tasks = Task.query.filter_by(user_id=current_user.id).all()
+    tasks = Task.query.all()
     return render_template('index.html', tasks=tasks)
 
 @app.route('/add', methods=['POST'])
 @login_required
 def add():
     title = request.form['title']
-    new_task = Task(title=title, user_id=current_user.id)
+    new_task = Task(title=title)
     db.session.add(new_task)
     db.session.commit()
     return redirect(url_for('index'))
@@ -53,6 +52,22 @@ def login():
             flash('Invalid username or password', 'error')
     return render_template('login.html')
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        existing_user = User.query.filter_by(username=username).first()
+        if existing_user:
+            flash('Username already exists. Please choose a different one.', 'error')
+        else:
+            new_user = User(username=username, password=password)
+            db.session.add(new_user)
+            db.session.commit()
+            flash('Registration successful! Please log in.', 'success')
+            return redirect(url_for('login'))
+    return render_template('register.html')
+
 @app.route('/logout')
 @login_required
 def logout():
@@ -63,14 +78,14 @@ def logout():
 @app.route('/admin')
 @login_required
 def admin():
-    tasks = Task.query.filter_by(user_id=current_user.id).all()
+    tasks = Task.query.all()
     return render_template('admin.html', tasks=tasks)
 
 @app.route('/admin/add', methods=['POST'])
 @login_required
 def add_task_admin():
     title = request.form['title']
-    new_task = Task(title=title, user_id=current_user.id)
+    new_task = Task(title=title)
     db.session.add(new_task)
     db.session.commit()
     return redirect(url_for('admin'))
@@ -79,7 +94,7 @@ def add_task_admin():
 @login_required
 def delete_task_admin(task_id):
     task = Task.query.get(task_id)
-    if task and task.user_id == current_user.id:
+    if task:
         db.session.delete(task)
         db.session.commit()
     return redirect(url_for('admin'))
@@ -87,37 +102,15 @@ def delete_task_admin(task_id):
 @app.route('/admin/delete_all', methods=['GET'])
 @login_required
 def delete_all_tasks_admin():
-    tasks = Task.query.filter_by(user_id=current_user.id).all()
-    for task in tasks:
-        db.session.delete(task)
+    Task.query.delete()
     db.session.commit()
     return redirect(url_for('admin'))
 
-@app.route('/save_task', methods=['POST'])
-def save_task():
-    data = request.get_json()
-    title = data['title']
-    start_date = data['start_date']
 
-    new_task = Task(title=title, start_date=start_date, user_id=current_user.id)
-    db.session.add(new_task)
-    db.session.commit()
 
-    return jsonify({'message': 'Task saved successfully'})
 
-@app.route('/admin/tasks')
-def get_tasks():
-    tasks = Task.query.filter_by(user_id=current_user.id).all()
-    task_list = []
+   
 
-    for task in tasks:
-        task_list.append({
-            'title': task.title,
-            'start': task.start_date,
-            'allDay': True
-        })
-
-    return jsonify(task_list)
 
 @app.route('/admin/logout')
 @login_required
@@ -130,3 +123,4 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     app.run(debug=True)
+    
