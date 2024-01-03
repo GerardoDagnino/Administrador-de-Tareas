@@ -14,6 +14,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+
+    <script>
+        const trashBinImage = "{{ url_for('static', filename='tachodebasura.png') }}";
+    </script>
+
 </head>
 <body class="task-admin">
     <!-- Barra de navegación -->
@@ -28,7 +33,7 @@
     <!-- Nuevo cuadro para la fecha seleccionada -->
     <div id="selectedDateContainer">
         <div id="selectedDateInfo"></div>
-        <button id="addTaskBtn" style="display: none;">Add Task</button>
+        
         <div id="taskInputContainer" style="display: none;">
             <input type="text" id="taskInput" placeholder="Enter task title" maxlength="11">
             <button id="saveTaskBtn">Save Task</button>
@@ -40,6 +45,10 @@
         <ul id="taskListSelectedDate"></ul>
     </div>
 
+
+    
+
+    
     <!-- Contenido principal -->
     <div class="container">
         <!-- Calendario -->
@@ -108,18 +117,29 @@
                     });
                 },
                 eventRender: function (event, element) {
-    // Reemplaza la "X" por la imagen de la basura
-    element.find('.fc-title').html('<img src="tachodebasura.png" class="delete-task-img" />');
+        // Crea un contenedor div para la tarea que incluye la imagen y el texto
+        var taskContainer = $('<div class="task-content"></div>');
 
-    // Maneja la eliminación de tareas solo en el calendario
-    element.find('.delete-task-img').click(function () {
-        $('#calendar').fullCalendar('removeEvents', event._id);
-        updateTaskListSelectedDate();
-    });
+        
 
-    // Ajusta el tamaño de la celda para adaptarse al contenido de la tarea
-    element.css('height', 'auto');
-}
+        // Agrega el texto de la tarea al contenedor
+        taskContainer.append('<span class="task-text">' + event.title + '</span>');
+
+        // Agrega la imagen del tacho de basura al contenedor
+        taskContainer.append('<img src="' + trashBinImage + '" class="delete-task-img" />');
+
+        // Reemplaza el contenido del título con el nuevo contenedor
+        element.find('.fc-title').html(taskContainer);
+
+        // Maneja la eliminación de tareas solo en el calendario
+        taskContainer.find('.delete-task-img').click(function () {
+            $('#calendar').fullCalendar('removeEvents', event._id);
+            updateTaskListSelectedDate();
+        });
+
+        // Ajusta el tamaño de la celda para adaptarse al contenido de la tarea
+        element.css('height', 'auto');
+    }
 
 
 

@@ -152,8 +152,8 @@ body.register-login {
 
 /* Estilos para la barra de navegación */
 nav {
-    background-color: #333;
-    color: #fff;
+    background-color: #3a87ad;
+    color: #000000;
     padding: 10px;
     text-align: center;
     
@@ -277,14 +277,14 @@ nav {
 
 /* Estilos para el enlace de cierre de sesión LOGOUT */
 .welcome-logout a {
-    color: #fff;
+    color: #000000;
     text-decoration: none;
     margin-left: 10px; /* Espaciado entre el mensaje de bienvenida y el enlace de cierre de sesión */
     transition: color 0.3s ease;
 }
 
 .welcome-logout a:hover {
-    color: #ddd; /* Cambia el color al pasar el mouse sobre el enlace */
+    color: #2d0075; /* Cambia el color al pasar el mouse sobre el enlace */
 }
 
 
@@ -303,14 +303,14 @@ body.task-admin {
 
 body.task-admin .container {
     display: flex;
-    max-width: 898px;
+    max-width: 944px;
     margin: 20px auto;
     background-color: #fff;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     height: 821px; /* Ajusta la altura según tus necesidades */
     width: 930px; /* Ajusta el ancho según tus necesidades */
-    margin-left: 188px; /* Agregué margen izquierdo para desplazar a la derecha */
+    margin-left: 172px; /* Agregué margen izquierdo para desplazar a la derecha */
 }
 
 body.task-admin #calendar {
@@ -340,6 +340,7 @@ input {
     margin-bottom: 20px;  /* Aumenté el espacio entre los campos */
     border: 1px solid #ccc;
     border-radius: 4px;
+    margin-top: 22px;
 }
 
 /* Estilos para el botón LOGIN Y REGISTER */
@@ -359,9 +360,15 @@ button:hover {
 }
 
 
+.task-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 
 .delete-task-img {
-    width: 20px; /* Ajusta el ancho según tus necesidades */
-    height: 20px; /* Ajusta la altura según tus necesidades */
-    cursor: pointer;
+    margin-left: -4px; /* Espacio a la izquierda de la imagen (ajustar según sea necesario) */
+
+    width: 18px; /* Ancho deseado */
+    height: 22px; /* Altura deseada */
 }
