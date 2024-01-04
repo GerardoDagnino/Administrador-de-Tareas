@@ -1,4 +1,3 @@
-import os
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -10,55 +9,35 @@ db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
-# Ruta al directorio instance
-INSTANCE_FOLDER_PATH = os.path.join('instance')
-
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(50), nullable=False)
-    tasks = db.relationship('Task', backref='user', lazy=True)
 
 @login_manager.user_loader
 def load_user(user_id):
-    user = User.query.get(int(user_id))
-    if user:
-        tasks_filepath = os.path.join(INSTANCE_FOLDER_PATH, f"{user.username}_tasks.txt")
-        if os.path.exists(tasks_filepath):
-            with open(tasks_filepath, 'r') as file:
-                tasks = [line.strip() for line in file if line.strip()]
-            user.tasks = [Task(title=title, user=user) for title in tasks]
-        else:
-            user.tasks = []
-    return user
+    return User.query.get(int(user_id))
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), nullable=False)
     start_date = db.Column(db.String(20), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-    user = db.relationship('User', backref=db.backref('tasks', lazy=True))
+@app.route('/')
+@login_required
+def index():
+    tasks = Task.query.all()
+    return render_template('index.html', tasks=tasks)
 
-# Ruta para agregar tarea
 @app.route('/add', methods=['POST'])
 @login_required
 def add():
     title = request.form['title']
-    new_task = Task(title=title, user_id=current_user.id)
+    new_task = Task(title=title)
     db.session.add(new_task)
     db.session.commit()
-
     return redirect(url_for('index'))
 
-# Ruta para la página principal
-@app.route('/')
-@login_required
-def index():
-    tasks = Task.query.filter_by(user_id=current_user.id).all()
-    return render_template('index.html', tasks=tasks)
-
-# Ruta para la página de inicio de sesión
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -73,7 +52,6 @@ def login():
             flash('Invalid username or password', 'error')
     return render_template('login.html')
 
-# Ruta para la página de registro
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -90,7 +68,6 @@ def register():
             return redirect(url_for('login'))
     return render_template('register.html')
 
-# Ruta para cerrar sesión
 @app.route('/logout')
 @login_required
 def logout():
@@ -98,14 +75,12 @@ def logout():
     flash('Logout successful!', 'success')
     return redirect(url_for('login'))
 
-# Ruta para la página de administración
 @app.route('/admin')
 @login_required
 def admin():
     tasks = Task.query.all()
     return render_template('admin.html', tasks=tasks)
 
-# Ruta para agregar tarea desde la página de administración
 @app.route('/admin/add', methods=['POST'])
 @login_required
 def add_task_admin():
@@ -113,13 +88,7 @@ def add_task_admin():
     new_task = Task(title=title)
     db.session.add(new_task)
     db.session.commit()
-
-    # Guardar la tarea en el archivo en la carpeta instance
-    with open(INSTANCE_FOLDER_PATH, 'a') as file:
-        file.write(f"{title}\n")
-
     return redirect(url_for('admin'))
-
 
 @app.route('/admin/delete/<int:task_id>', methods=['GET'])
 @login_required
@@ -153,9 +122,4 @@ def admin_logout():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-
-    # Crear la carpeta instance si no existe
-    if not os.path.exists(INSTANCE_FOLDER_PATH):
-        os.makedirs(INSTANCE_FOLDER_PATH)
-
     app.run(debug=True)
