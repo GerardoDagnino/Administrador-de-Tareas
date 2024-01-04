@@ -10,8 +10,8 @@ db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
-# Definir la ruta al archivo en la carpeta instance
-INSTANCE_FOLDER_PATH = os.path.join('instance', 'tasks.txt')
+# Ruta al directorio instance
+INSTANCE_FOLDER_PATH = os.path.join('instance')
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -37,18 +37,66 @@ def add():
     new_task = Task(title=title, user=current_user)
     db.session.add(new_task)
     db.session.commit()
-
+    
     # Guardar la tarea en el archivo en la carpeta instance
-    with open(INSTANCE_FOLDER_PATH, 'a') as file:
+    tasks_filepath = os.path.join(INSTANCE_FOLDER_PATH, f"{current_user.username}_tasks.txt")
+    with open(tasks_filepath, 'a') as file:
         file.write(f"{title}\n")
 
     return redirect(url_for('index'))
+
+# Ruta para la página principal
+@app.route('/')
+@login_required
+def index():
+    tasks = Task.query.filter_by(user=current_user).all()
+    return render_template('index.html', tasks=tasks)
+
+# Ruta para la página de inicio de sesión
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        user = User.query.filter_by(username=username).first()
+        if user and user.password == password:
+            login_user(user)
+            flash('Login successful!', 'success')
+            return redirect(url_for('admin'))
+        else:
+            flash('Invalid username or password', 'error')
+    return render_template('login.html')
+
+# Ruta para la página de registro
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        existing_user = User.query.filter_by(username=username).first()
+        if existing_user:
+            flash('Username already exists. Please choose a different one.', 'error')
+        else:
+            new_user = User(username=username, password=password)
+            db.session.add(new_user)
+            db.session.commit()
+            flash('Registration successful! Please log in.', 'success')
+            return redirect(url_for('login'))
+    return render_template('register.html')
+
+# Ruta para cerrar sesión
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Logout successful!', 'success')
+    return redirect(url_for('login'))
 
 # Ruta para la página de administración
 @app.route('/admin')
 @login_required
 def admin():
-    tasks = Task.query.filter_by(user=current_user).all()
+    tasks = Task.query.all()
     return render_template('admin.html', tasks=tasks)
 
 # Ruta para agregar tarea desde la página de administración
@@ -56,7 +104,7 @@ def admin():
 @login_required
 def add_task_admin():
     title = request.form['title']
-    new_task = Task(title=title, user=current_user)
+    new_task = Task(title=title)
     db.session.add(new_task)
     db.session.commit()
 
@@ -101,8 +149,7 @@ if __name__ == '__main__':
         db.create_all()
 
     # Crear la carpeta instance si no existe
-    if not os.path.exists('instance'):
-        os.makedirs('instance')
+    if not os.path.exists(INSTANCE_FOLDER_PATH):
+        os.makedirs(INSTANCE_FOLDER_PATH)
 
-    # Iniciar la aplicación
     app.run(debug=True)
