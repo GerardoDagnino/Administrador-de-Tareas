@@ -21,7 +21,16 @@ class User(UserMixin, db.Model):
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    user = User.query.get(int(user_id))
+    if user:
+        tasks_filepath = os.path.join(INSTANCE_FOLDER_PATH, f"{user.username}_tasks.txt")
+        if os.path.exists(tasks_filepath):
+            with open(tasks_filepath, 'r') as file:
+                tasks = [line.strip() for line in file if line.strip()]
+            user.tasks = [Task(title=title, user=user) for title in tasks]
+        else:
+            user.tasks = []
+    return user
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -29,19 +38,16 @@ class Task(db.Model):
     start_date = db.Column(db.String(20), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
+    user = db.relationship('User', backref=db.backref('tasks', lazy=True))
+
 # Ruta para agregar tarea
 @app.route('/add', methods=['POST'])
 @login_required
 def add():
     title = request.form['title']
-    new_task = Task(title=title, user=current_user)
+    new_task = Task(title=title, user_id=current_user.id)
     db.session.add(new_task)
     db.session.commit()
-    
-    # Guardar la tarea en el archivo en la carpeta instance
-    tasks_filepath = os.path.join(INSTANCE_FOLDER_PATH, f"{current_user.username}_tasks.txt")
-    with open(tasks_filepath, 'a') as file:
-        file.write(f"{title}\n")
 
     return redirect(url_for('index'))
 
@@ -49,7 +55,7 @@ def add():
 @app.route('/')
 @login_required
 def index():
-    tasks = Task.query.filter_by(user=current_user).all()
+    tasks = Task.query.filter_by(user_id=current_user.id).all()
     return render_template('index.html', tasks=tasks)
 
 # Ruta para la página de inicio de sesión
